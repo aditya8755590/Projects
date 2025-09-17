@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="white">
+  <!-- Right Arrow -->
+  <path d="M8 14h24l-6-6v4h-18v4h18v4l6-6z"/>
+  <!-- Left Arrow -->
+  <path d="M40 34h-24l6 6v-4h18v-4h-18v-4l-6 6z"/>
+</svg>
