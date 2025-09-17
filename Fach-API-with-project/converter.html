@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="converter.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+             <div class="logo">
+            <svg id="exchangeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="120" height="120">
+                <!-- Arrows -->
+                <path d="M48 18 A14 14 0 0 0 24 22 L20 22 L23.5 18.5" fill="none" stroke="#111" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M16 46 A14 14 0 0 0 40 42 L44 42 L40.5 45.5" fill="none" stroke="#111" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" />
+
+                <!-- Circles -->
+                <circle cx="44" cy="24" r="6.2" fill="#ffffff" stroke="#111" stroke-width="1.2" />
+                <circle cx="20" cy="40" r="6.2" fill="#ffffff" stroke="#111" stroke-width="1.2" />
+
+                <!-- Currency Symbols -->
+                <text id="currency1" x="44" y="27.5" font-family="Arial" font-size="10" text-anchor="middle"
+                    fill="#111">¤</text>
+                <text id="currency2" x="20" y="42.5" font-family="Arial" font-size="10" text-anchor="middle"
+                    fill="#111">¤</text>
+            </svg>
+        </div>
+         <h2>Currency converter</h2>
+        </div>
+        <form>
+            <div class="amount">
+                <p style="color: #323131; font-size: larger;">Enter amount</p>
+                <input value=100 type="text">
+            </div>
+            <div class="dropdown">
+                <div class="from">
+                    <p>From</p>
+                    <div class="select-container">
+                        <img src="https://flagsapi.com/US/flat/64.png">
+                        <select  class="options"name="from" id="">
+                            
+                        </select>
+                    </div>
+                </div>
+                <img src="exchange.svg" alt="">
+                <div class="to">
+                    <p>To</p>
+                    <div class="select-container">
+                        <img src="https://flagsapi.com/IN/flat/64.png">
+                        <select class="options" name="to" id="">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="msg"></div>
+
+            <Button> Exchange Now</Button>
+        </form>
+    </div>
+     <script src="codes.js"></script>
+    <script src="converter.js"></script>
+</body>
+
+</html>
