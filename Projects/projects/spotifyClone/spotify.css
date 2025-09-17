@@ -1,0 +1,131 @@
+/* Spotify Clone CSS Styles */
+
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.left {
+    width: 250px;
+    background-color: #181818;
+    padding: 20px;
+}
+
+.right {
+    flex: 1;
+    padding: 20px;
+}
+
+.bg-grey {
+    background-color: #282828;
+}
+
+.bg-black {
+    background-color: #121212;
+}
+
+.rounded {
+    border-radius: 8px;
+}
+
+.m-1 {
+    margin: 10px;
+}
+
+.p-1 {
+    padding: 10px;
+}
+
+/* Logo Styles */
+.logo img {
+    width: 100%;
+    height: auto;
+}
+
+/* Navigation Styles */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+li img {
+    margin-right: 10px;
+}
+
+/* Library Styles */
+.library .heading {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Footer Links */
+.footer div {
+    margin: 5px 0;
+}
+
+.footer a {
+    color: #b3b3b3;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Playlist Styles */
+.spotifyPlaylist {
+    margin-top: 20px;
+}
+
+.cardContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #1db954;
+    border-radius: 8px;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+}
+
+.songInfo {
+    margin: 10px 0;
+}
+
+/* Play Bar Styles */
+.playBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.songsButton img {
+    width: 30px;
+    height: auto;
+    cursor: pointer;
+}
