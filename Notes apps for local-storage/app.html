@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      background: #fff;
+      padding: 20px;
+      margin-top: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: none;
+      font-size: 14px;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .notes {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .note {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 6px;
+      position: relative;
+    }
+
+    .delete {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 3px 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .delete:hover {
+      background: darkred;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Notes App</h1>
+    <textarea id="noteInput" placeholder="Write your note here..."></textarea>
+    <button id="addNote">Add Note</button>
+    <div class="notes" id="notesContainer"></div>
+  </div>
+
+  <script>
+    // Steps:
+    // 1. Add note on button click
+    document.getElementById("addNote").addEventListener("click", () => {
+      const noteText = document.getElementById("noteInput").value;
+      if (noteText) {
+        addNoteToLocalStorage(noteText);
+        document.getElementById("noteInput").value = "";
+      }
+    });
+
+    // 2. Save notes to localStorage
+    function addNoteToLocalStorage(note) {
+      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+      notes.push(note);
+      localStorage.setItem("notes", JSON.stringify(notes));
+     displayNotes();
+    }
+
+    // 3. Load notes when page refreshes
+    // i just want that when the page loads the notes are displayed
+    // add butter fly comes and sit on the container heading
+    window.addEventListener("load", displayNotes);
+
+    // 4. Delete note when "delete" button is clicked
+   function displayNotes(){
+        const notes = JSON.parse(localStorage.getItem("notes"))
+        const notesContainer = document.getElementById("notesContainer");
+        notesContainer.innerHTML = "";
+        notes.forEach((note, index) => {
+       const noteElement = document.createElement("div");
+       noteElement.className = "note";
+       noteElement.innerText = note;
+       const deleteButton = document.createElement("button");
+       deleteButton.className = "delete";
+       deleteButton.innerText = "Delete";
+       deleteButton.addEventListener("click", () => {
+         deleteNoteFromLocalStorage(index);
+       });
+       noteElement.appendChild(deleteButton);
+       notesContainer.appendChild(noteElement);
+     });
+    }
+    function deleteNoteFromLocalStorage(index) {
+      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+      notes.splice(index, 1);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      displayNotes();
+    }
+  </script>
+</body>
+</html>
