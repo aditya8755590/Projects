@@ -51,7 +51,6 @@
 
 }
 .search button{
-  /* padding: 0.5em 1em; */
   background-color: #000000;
   color: white;
   border: none;
@@ -63,4 +62,10 @@
 }
 .search button:hover{
   background-color: #565656;
+}
+.items{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 2rem;
 }
