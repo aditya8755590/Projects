@@ -16,7 +16,8 @@
 }
 .main{
   display: flex;
-  height: 90vh;
+ min-height: 90vh;
+ max-height: 100%;
   background-color: rgb(245, 245, 245);
   display: inline-block;
   width: 100%;
