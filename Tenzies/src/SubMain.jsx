@@ -7,7 +7,7 @@ export default function SubMain(){
     const arr=[]
     for(let i=0;i<10;i++){
         arr[i]={value:Math.floor(Math.random()*6)+1
-          ,isHeld:true
+          ,isHeld:false
           ,id: nanoid()
         }
     }
@@ -29,8 +29,16 @@ const diceArr=DieState.map((e)=>{
 })
 
 function suffelDice(){
-  setDieState(generateAllNewDice)
+
+  return(
+    setDieState(oldDice => oldDice.map(die => 
+            die.isHeld ?
+                die :
+                { ...die, value: Math.floor(Math.random() * 6)+1}
+        ))
+  )
 }
+
     return(
         <section className="our-section">
         <section className="content">
