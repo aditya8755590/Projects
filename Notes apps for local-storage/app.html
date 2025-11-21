@@ -67,11 +67,10 @@
       border: 1px solid #ddd;
       padding: 10px;
       border-radius: 6px;
-      position: relative;
+
     }
 
     .delete {
-      position: absolute;
       top: 8px;
       right: 10px;
       background: red;
@@ -91,60 +90,31 @@
 <body>
   <div class="container">
     <h1>Notes App</h1>
-    <textarea id="noteInput" placeholder="Write your note here..."></textarea>
-    <button id="addNote">Add Note</button>
-    <div class="notes" id="notesContainer"></div>
+    <input id="noteInput" placeholder="Write your note here..."></input>
+    <button id="addNote" onclick="add()">Add Note</button>
+    <ul class="notes" id="notesContainer"></ul>
   </div>
 
   <script>
-    // Steps:
-    // 1. Add note on button click
-    document.getElementById("addNote").addEventListener("click", () => {
-      const noteText = document.getElementById("noteInput").value;
-      if (noteText) {
-        addNoteToLocalStorage(noteText);
-        document.getElementById("noteInput").value = "";
-      }
-    });
+    function add(){
+       const data=document.getElementById("noteInput").value;
+       let ul=document.getElementById("notesContainer");
+      let li=document.createElement("li");
+       li.innerText=data;
+       
+       let btn=document.createElement("button");
+        btn.innerText="Delete"
+        btn.style.backgroundColor = "red"
+        btn.classList.add("delete")
+       
+       li.appendChild(btn)
+      btn.addEventListener("click",function(){
+        li.remove()
+      })
 
-    // 2. Save notes to localStorage
-    function addNoteToLocalStorage(note) {
-      let notes = JSON.parse(localStorage.getItem("notes")) || [];
-      notes.push(note);
-      localStorage.setItem("notes", JSON.stringify(notes));
-     displayNotes();
+       ul.appendChild(li);
     }
-
-    // 3. Load notes when page refreshes
-    // i just want that when the page loads the notes are displayed
-    // add butter fly comes and sit on the container heading
-    window.addEventListener("load", displayNotes);
-
-    // 4. Delete note when "delete" button is clicked
-   function displayNotes(){
-        const notes = JSON.parse(localStorage.getItem("notes"))
-        const notesContainer = document.getElementById("notesContainer");
-        notesContainer.innerHTML = "";
-        notes.forEach((note, index) => {
-       const noteElement = document.createElement("div");
-       noteElement.className = "note";
-       noteElement.innerText = note;
-       const deleteButton = document.createElement("button");
-       deleteButton.className = "delete";
-       deleteButton.innerText = "Delete";
-       deleteButton.addEventListener("click", () => {
-         deleteNoteFromLocalStorage(index);
-       });
-       noteElement.appendChild(deleteButton);
-       notesContainer.appendChild(noteElement);
-     });
-    }
-    function deleteNoteFromLocalStorage(index) {
-      let notes = JSON.parse(localStorage.getItem("notes")) || [];
-      notes.splice(index, 1);
-      localStorage.setItem("notes", JSON.stringify(notes));
-      displayNotes();
-    }
+   
   </script>
 </body>
 </html>
