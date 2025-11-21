@@ -96,25 +96,42 @@
   </div>
 
   <script>
+
+
+
     function add(){
        const data=document.getElementById("noteInput").value;
        let ul=document.getElementById("notesContainer");
       let li=document.createElement("li");
        li.innerText=data;
-       
        let btn=document.createElement("button");
         btn.innerText="Delete"
         btn.style.backgroundColor = "red"
         btn.classList.add("delete")
-       
        li.appendChild(btn)
       btn.addEventListener("click",function(){
         li.remove()
-      })
+        saveData()
 
+      })
        ul.appendChild(li);
     }
-   
+
+
+
+
+
+
+    function saveData(){
+      localStorage.setItem("data",notesContainer.innerHTML);
+    }
+    function showTask(){
+      notesContainer.innerHTML=localStorage.getItem("data")
+    }
+    showTask()
+
+
+
   </script>
 </body>
 </html>
