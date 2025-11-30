@@ -46,8 +46,10 @@ export default function Main() {
             <p>Generate a recipe from your list of ingredients.</p>
           </div>
           <button>Get a recipe</button>
-        </div> }
-      </section>}
+        </div> 
+        }
+      </section>
+      }
     </main>
   )
 }
