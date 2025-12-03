@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: "Inter", Arial, sans-serif;
+    background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+    min-width: 350px;
+}
+.container {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid #4CAF50;
+    margin-bottom: 10px;
+    font-size: 18px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.8);
+}
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.25s;
+    font-size: 14px;
+}
+#input-btn, #save-tab {
+    background: #4CAF50;
+    color: white;
+}
+
+#input-btn:hover, #save-tab:hover {
+    background: #3e8e41;
+}
+#delete-btn {
+    background: transparent;
+    border: 2px solid #4CAF50;
+    color: #4CAF50;
+}
+
+#delete-btn:hover {
+    background: #4CAF50;
+    color: white;
+}
+ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 10px;
+}
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: white;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+li a {
+    flex-grow: 1;         
+    margin-right: 10px;  
+    word-break: break-all;
+    color: #2e7d32;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+li a:hover {
+    text-decoration: underline;
+}
+.del-btn {
+    flex-shrink: 0;
+    width: 35px;       
+    height: 30px;     
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.del-btn:hover {
+    background: #cc0000;
+}

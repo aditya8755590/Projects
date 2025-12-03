@@ -53,6 +53,7 @@ export default function Main() {
     <main className="main">
       <h2>Welcome to Chef Claude's Kitchen</h2>
       <p>Discover delicious recipes and cooking tips.</p>
+<<<<<<< HEAD
 
       <Myform additems={additems} />
 
@@ -63,6 +64,35 @@ export default function Main() {
 
       {recipeShown && <ClaudeRecipe recipeText={recipeText} />}
       {loading && <p>Generating recipe...</p>}
+=======
+      {/* we use action insted of onsummbit  */}
+      <form className="search" action={additems}>
+        <input
+          type="text"
+          placeholder="eg .tomato"
+          name="ingredient"
+        />
+        <button>Add ingredient</button>
+      </form>
+      {/* <div className="items">
+        <ul>
+          {ingredientsListItems}
+        </ul>
+      </div> */}
+      {ingredientsListItems.length>0&&<section>
+        <h2>Ingredients on hand:</h2>
+        <ul className="ingredients-list" aria-live="polite">{ingredientsListItems}</ul>
+        { ingredientsListItems.length>=3&&<div className="get-recipe-container">
+          <div>
+            <h3>Ready for a recipe?</h3>
+            <p>Generate a recipe from your list of ingredients.</p>
+          </div>
+          <button>Get a recipe</button>
+        </div> 
+        }
+      </section>
+      }
+>>>>>>> 0272d2d8139c9b327beb9b7d83d000c6f9a5052b
     </main>
   );
 }

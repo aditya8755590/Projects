@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "version": "1.1",
+    "name": "my-personal",
+    
+    "action": {
+        "default_popup": "index.html",
+        "default_icon": "107.jpg"
+    },
+    
+     "permissions": [
+        "tabs"
+    ]
+}
