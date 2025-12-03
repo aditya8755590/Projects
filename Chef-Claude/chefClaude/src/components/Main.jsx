@@ -49,12 +49,11 @@ export default function Main() {
     setRecipeText("Error connecting to server.");
   }
 }
+
   return (
     <main className="main">
       <h2>Welcome to Chef Claude's Kitchen</h2>
       <p>Discover delicious recipes and cooking tips.</p>
-<<<<<<< HEAD
-
       <Myform additems={additems} />
 
       <IngredientsList
@@ -64,7 +63,6 @@ export default function Main() {
 
       {recipeShown && <ClaudeRecipe recipeText={recipeText} />}
       {loading && <p>Generating recipe...</p>}
-=======
       {/* we use action insted of onsummbit  */}
       <form className="search" action={additems}>
         <input
@@ -92,7 +90,6 @@ export default function Main() {
         }
       </section>
       }
->>>>>>> 0272d2d8139c9b327beb9b7d83d000c6f9a5052b
     </main>
   );
 }
