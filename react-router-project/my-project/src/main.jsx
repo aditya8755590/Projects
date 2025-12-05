@@ -15,6 +15,7 @@ import Home from "./components/Home.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
 import "./index.css";
+import Myphoto from "./components/Myphoto.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
       <Route path="contact" element={<Contact />} />
       <Route path='user/:userid' element={<User />} />
        <Route path='github' element={<Github />} />
+        <Route path='myphoto' element={<Myphoto  />} />
 
     </Route>
   )
