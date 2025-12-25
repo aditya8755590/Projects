@@ -13,9 +13,9 @@ const server=http.createServer((req,res)=>{
 //     res.end("hello koi input nahai hai")
 //    }
 if(req.url=="/api"&&req.method==='GET'){
-   res.end('today is christmas fuck you ')}
+   res.end('today is christmas')}
    else{
-    res.end('lund lai lo nahi to api dalo bas ');
+    res.end('api dalo bas ');
    }
 
 })
