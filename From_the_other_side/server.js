@@ -1,5 +1,6 @@
 import https from 'node:http'
 const port=7004;
+console.log(import.meta);
 const server=https.createServer((req,res)=>{
     // res.statusCode=200
     // res.setHeader('content-Type','text/html')
@@ -7,6 +8,3 @@ const server=https.createServer((req,res)=>{
     res.end(JSON.stringify({message: 'The server is working'}))
 })
 server.listen(port,()=>console.log("server is listening on port "+port))
-
-  
-
