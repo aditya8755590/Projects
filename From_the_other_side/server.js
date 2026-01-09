@@ -1,10 +1,21 @@
-import https from 'node:http'
-const port=7004;
-console.log(import.meta);
-const server=https.createServer((req,res)=>{
-    // res.statusCode=200
-    // res.setHeader('content-Type','text/html')
-    res.writeHead(200,{'Content-Type':'application/json'})
-    res.end(JSON.stringify({message: 'The server is working'}))
+import http from 'node:http'
+import { serveStatic } from './utils/serveStatic.js'
+import { handleGet } from './handlers/routeHandlers.js'
+
+const PORT = 8000
+
+const __dirname = import.meta.dirname
+
+const server = http.createServer(async (req, res) => {
+
+    if (req.url === '/api') {
+        if (req.method === 'GET') {
+            return await handleGet(res)
+        }
+    }
+    else if (!req.url.startsWith('/api')) {
+        return await serveStatic(req, res, __dirname)
+    }
 })
-server.listen(port,()=>console.log("server is listening on port "+port))
+
+server.listen(PORT, () => console.log(`Connected on port: ${PORT}`))
