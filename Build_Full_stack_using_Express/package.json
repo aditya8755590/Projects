@@ -1,0 +1,17 @@
+{
+  "name": "build_full_stack_using_express",
+  "version": "1.0.0",
+  "description": "make my fist full stack ",
+  "license": "ISC",
+  "author": "aditya",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}
