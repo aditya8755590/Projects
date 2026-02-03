@@ -3,6 +3,7 @@
 
 // The current database to use.
 use("claud-chef");
+db.dropDatabase()
 db.ingredints.insertMany([
 {
 name: "Wireless Mouse",
