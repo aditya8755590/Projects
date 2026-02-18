@@ -4,6 +4,7 @@ import userModel from '../models/userModel.js';
 import transporter from '../config/nodemailer.js';
 
 export const register = async (req, res) => {
+    
     const { name, email, password } = req.body;
     if (!name | !email | !password) {
         return res.json({ success: false, message: 'Missing detail' })
@@ -48,6 +49,7 @@ export const register = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
+
 export const login = async (req, res) => {
     const { email, password } = req.body;
 
@@ -82,6 +84,7 @@ export const login = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
+
 export const logout = async (req, res) => {
     try {
         res.clearCookie('token', {
@@ -102,6 +105,7 @@ export const logout = async (req, res) => {
         });
     }
 }
+
 export const sendVerifyOtp = async (req, res) => {
     try {
         const { userId } = req.body;
@@ -129,6 +133,7 @@ export const sendVerifyOtp = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
+
 export const verifyEmail = async (req, res) => {
     const { userId, otp } = req.body;
     if (!userId || !otp) {
@@ -155,13 +160,19 @@ export const verifyEmail = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
-export const isAuthenticated = (req, res) => {
 
-    try {
-        return res.json({ success: true, message: "Authorized" })
-    }
-    catch (error) {
-        return res.json({ success: false, message: "Unauthorized" })
+export const isAuthenticated = (req, res) => {
+  // explain this function
+  // This function checks if the user is authenticated by verifying the JWT token
+  const token = req.cookies.token;
+  if (!token) {
+      return res.json({ success: false, message: "Unauthorized" })
+  }
+  try {
+      return res.json({ success: true, message: "Authorized" })
+  }
+  catch (error) {
+      return res.json({ success: false, message: "Unauthorized" })
     }
 }
 
@@ -188,6 +199,40 @@ export const sendResetOtp = async (req, res) => {
             text: `Your OTP for password reset is: ${otp}. It will expire in 10 minutes.`
         });
         res.json({ success: true, message: "OTP sent to email" })
+    }
+    catch (error) {
+        res.json({ success: false, message: error.message })
+    }
+}
+
+export const resetPassword = async (req, res) => {  
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+        return res.json({ success: false, message: "missing email or otp or newPassword" })
+    }
+    try {
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.json({ success: false, message: "user not found" })
+        }
+        // normalize types to avoid mismatches (string vs number)
+        if (String(user.resetOtp) !== String(otp)) {
+            console.log("user.resetOtp: ", user.resetOtp, typeof user.resetOtp);
+            console.log("otp: ", otp, typeof otp);
+            return res.json({ success: false, message: "invalid otp" + user.resetOtp + " " + otp })
+        }
+        if (user.resetOtpExprireAt < Date.now()) {
+            return res.json({ success: false, message: "otp expired" })
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        user.resetOtp = undefined;
+        user.resetOtpExprireAt = undefined;
+        await user.save();
+        res.json({ success: true, message: "password reset successfully" })
+
     }
     catch (error) {
         res.json({ success: false, message: error.message })
