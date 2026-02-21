@@ -1,13 +1,14 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
+import Header from '../components/Header'
+import {assets} from '../assets/assets'
+
 
 const Home = () => {
   return (
-    <div>
+    <div className=' flex flex-col  bg-gray-100 min-h-screen bg-[url("/bg_img.png")] bg-cover bg-center'>
       <Navbar />
-
-      <h1 className="text-4xl font-bold">Welcome to the Home Page</h1>
-      <p className="mt-4">This is a simple example of a React component styled with Tailwind CSS.</p>
+      <Header />
     </div>
   )
 }
