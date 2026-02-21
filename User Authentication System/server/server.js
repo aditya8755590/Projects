@@ -5,16 +5,17 @@ import cookieParser from "cookie-parser";
 import connectDB from './config/mongodb.js'
 import authRouter from './routes/authRoutes.js'
 import userRouter from './routes/userRoutes.js'
-const app=express();
-const port=process.env.PORT||4000
+const app = express();
+const port = process.env.PORT || 4000
 connectDB();
 app.use(express.json());
 app.use(cookieParser());
+const allowsOrigins = ['http://localhost:5173', 'http://localhost:5174']
 // CORS allows the browser to let frontend and backend communicate securely, and credentials: true allows authentication data to be sent.
-app.use(cors({credentials:true}))
+app.use(cors({ origin: allowsOrigins, credentials: true }))
 // API endpoints
-app.get('/',(req,res)=> res.send('API working'));
-app.use('/api/auth',authRouter)
-app.use('/api/user',userRouter)
-app.listen(port,()=>console.log(`server stated on port :${port}`));
+app.get('/', (req, res) => res.send('API working'));
+app.use('/api/auth', authRouter)
+app.use('/api/user', userRouter)
+app.listen(port, () => console.log(`server stated on port :${port}`));
 
