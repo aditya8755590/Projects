@@ -4,7 +4,7 @@ import userModel from '../models/userModel.js';
 import transporter from '../config/nodemailer.js';
 
 export const register = async (req, res) => {
-    
+
     const { name, email, password } = req.body;
     if (!name | !email | !password) {
         return res.json({ success: false, message: 'Missing detail' })
@@ -78,7 +78,7 @@ export const login = async (req, res) => {
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
-        return res.json({ sucess: true });
+        return res.json({ success: true });
     }
     catch (error) {
         res.json({ success: false, message: error.message })
@@ -162,17 +162,17 @@ export const verifyEmail = async (req, res) => {
 }
 
 export const isAuthenticated = (req, res) => {
-  // explain this function
-  // This function checks if the user is authenticated by verifying the JWT token
-  const token = req.cookies.token;
-  if (!token) {
-      return res.json({ success: false, message: "Unauthorized" })
-  }
-  try {
-      return res.json({ success: true, message: "Authorized" })
-  }
-  catch (error) {
-      return res.json({ success: false, message: "Unauthorized" })
+    // explain this function
+    // This function checks if the user is authenticated by verifying the JWT token
+    const token = req.cookies.token;
+    if (!token) {
+        return res.json({ success: false, message: "Unauthorized" })
+    }
+    try {
+        return res.json({ success: true, message: "Authorized" })
+    }
+    catch (error) {
+        return res.json({ success: false, message: "Unauthorized" })
     }
 }
 
@@ -205,7 +205,7 @@ export const sendResetOtp = async (req, res) => {
     }
 }
 
-export const resetPassword = async (req, res) => {  
+export const resetPassword = async (req, res) => {
     const { email, otp, newPassword } = req.body;
 
     if (!email || !otp || !newPassword) {

@@ -1,9 +1,15 @@
 import React from 'react'
-import {assets} from '../assets/assets'
+import { assets } from '../assets/assets'
+import { useContext } from 'react'
+import { AppContext } from '../context/AppContext'
 const Header = () => {
+
+  const { user } = useContext(AppContext)
+
+  console.log(user);
   return (
     <div className="flex flex-col items-center justify-center text-center pt-28 pb-10 bg-gray-800 text-white">
-      
+
       <img
         src={assets.header_img}
         alt=""
@@ -11,7 +17,8 @@ const Header = () => {
       />
 
       <h1 className="flex items-center gap-2 text-2xl sm:text-3xl font-semibold">
-        Hey Developer
+        Hey {user ? user.name : 'Developer'}
+
         <img
           className="w-6 sm:w-8"
           src={assets.hand_wave}

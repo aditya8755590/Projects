@@ -6,7 +6,7 @@ import { AppContext } from '../context/AppContext'
 import { toast } from 'react-toastify';
 const Login = () => {
   const navigate = useNavigate()
-  const { BACKEND_URL, setIsLoggedIn } = useContext(AppContext)
+  const { BACKEND_URL, setIsLoggedIn, getUserData } = useContext(AppContext)
 
   const [state, setState] = React.useState('sign up')
   const [name, setName] = React.useState('')
@@ -18,8 +18,10 @@ const Login = () => {
       e.preventDefault();
       axios.defaults.withCredentials = true;
       const { data } = (state === 'sign up' ? await axios.post(`${BACKEND_URL}/api/auth/register`, { name, email, password }) : await axios.post(`${BACKEND_URL}/api/auth/login`, { email, password }))
+
       if (data.success) {
         setIsLoggedIn(true);
+        getUserData();
         navigate('/');
       }
       else {
@@ -28,6 +30,7 @@ const Login = () => {
       console.log(data);
     }
     catch (error) {
+      toast.error(error.response?.data?.message || error.message);
       console.log(error);
     }
   }
@@ -58,7 +61,7 @@ const Login = () => {
           </div>
           <p onClick={() => navigate('/reset-password')} className='text-center text-sm mt-2 cursor-pointer'>Forget password?</p>
 
-          <button className='bg-blue-500 hover:bg-blue-600 transition text-white py-2 rounded-full mt-4 font-medium' > {state === 'sign up' ? 'Sign Up' : 'Login'} </button>
+          <button className='bg-blue-500 hover:bg-blue-600 transition text-white py-2 rounded-full mt-4 font-medium' >{state === 'sign up' ? 'Sign Up' : 'Login'} </button>
 
         </form>
 
@@ -70,6 +73,7 @@ const Login = () => {
       </div>
     </div>
   )
+
 }
 
 export default Login
