@@ -13,6 +13,25 @@ export const AppContextProvider = ({ children }) => {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const [isLoggedIn, setIsLoggedIn] = React.useState(false)
   const [user, setUser] = React.useState(false);
+  const getAuthState = async () => {
+    try {
+      const { data } = await axios.get(`${BACKEND_URL}/api/user/is-auth`)
+
+      if (data.success) {
+        setIsLoggedIn(true)
+        getUserData()
+      }
+      else {
+        setIsLoggedIn(false)
+      }
+    }
+    catch (error) {
+      toast.error(error.message)
+    }
+  }
+  useEffect(() => {
+    getAuthState()
+  }, [])
   //Axios is a popular, promise-based JavaScript library 
   //used to make HTTP requests from web browsers or Node.js environments. 
   //It acts as a middleman between applications and APIs, 
