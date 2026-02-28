@@ -10,6 +10,7 @@ export const AppContext = React.createContext()
 
 export const AppContextProvider = ({ children }) => {
 
+  axios.defaults.withCredentials = true;
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const [isLoggedIn, setIsLoggedIn] = React.useState(false)
   const [user, setUser] = React.useState(false);
@@ -29,7 +30,8 @@ export const AppContextProvider = ({ children }) => {
       toast.error(error.message)
     }
   }
-  useEffect(() => {
+
+  React.useEffect(() => {
     getAuthState()
   }, [])
   //Axios is a popular, promise-based JavaScript library 
