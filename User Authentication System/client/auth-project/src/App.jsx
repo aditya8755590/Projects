@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Home from './pages/Home'
 import Login from './pages/Login'
-import EmailVerify from './pages/EmailVerify'
+import EmailVerify from './pages/Emailverify'
 import ResetPassword from './pages/ResetPassword'
 
 function App() {

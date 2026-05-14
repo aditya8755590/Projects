@@ -31,12 +31,12 @@ function Navbar() {
     try {
       axios.defaults.withCredentials = true;
       const { data } = await axios.post(
-        `${BACKEND_URL}/api/user/send-verification-otp`,
+        `${BACKEND_URL}/api/auth/send-verify-otp`,
         { email: user.email }
       );
 
       if (data.success) {
-        navigate('/verify-email');
+        navigate('/email-verify');
         toast.success(data.message);
         setOpen(false);   // close dropdown
       } else {
@@ -50,7 +50,7 @@ function Navbar() {
   const logout = async () => {
     try {
       axios.defaults.withCredentials = true;
-      const { data } = await axios.post(`${BACKEND_URL}/api/user/logout`);
+      const { data } = await axios.post(`${BACKEND_URL}/api/auth/logout`);
 
       if (data.success) {
         navigate('/login');

@@ -7,7 +7,7 @@ authRouter.post('/register', register);
 authRouter.post('/login', login);
 authRouter.post('/logout', logout);
 authRouter.post('/send-verify-otp', userAuth, sendVerifyOtp);
-authRouter.post('/verify-email', userAuth, verifyEmail);
+authRouter.post('/verify-account', userAuth, verifyEmail);
 // how this is work?
 // This route is protected by userAuth middleware, which checks if the user is authenticated.
 // If the user is authenticated, the verifyEmail function is called to handle the email verification logic.
