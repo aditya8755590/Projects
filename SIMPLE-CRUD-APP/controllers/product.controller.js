@@ -1,4 +1,5 @@
 const Product=require('../models/products.model')
+
 const getProducts=async (req,res)=>{
    try{
      const product=await Product.find({})
@@ -8,6 +9,7 @@ const getProducts=async (req,res)=>{
     res.status(500).json({message:error.message});
    }
 }
+
 const addProduct=async (req,res)=>{
    try{
      const product=await Product.create(req.body)
