@@ -7,6 +7,7 @@ import { verificationEmailTemplate, passwordResetTemplate } from '../config/emai
 export const register = async (req, res) => {
 
     const { name, email, password } = req.body;
+    
     if (!name | !email | !password) {
         return res.json({ success: false, message: 'Missing detail' })
     }
@@ -178,7 +179,6 @@ export const isAuthenticated = (req, res) => {
         return res.json({ success: false, message: "Unauthorized" })
     }
 }
-
 // send Password reset otp
 export const sendResetOtp = async (req, res) => {
     try {
