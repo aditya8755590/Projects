@@ -1,0 +1,78 @@
+<!-- FILE: README.md -->
+<!--
+Practice ideas with JavaScript:
+- index.html: Implement search bar, featured products slider.
+- product.html: Load products dynamically from JSON, implement filtering and sorting.
+- cart.html: Add/remove items, update quantities, calculate totals, save cart to localStorage.
+- checkout.html: Validate form inputs, simulate payment, clear cart.
+
+-->
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ShopEasy — Home</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="site-header" id="navbar">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">ShopEasy</a>
+
+      <div class="search_bar">
+        <input type="input_text" placeholder="Search products...">
+        <button type="submit">Search</button>
+      </div>
+
+      <nav class="main-nav">
+
+        <!-- <a href="index.html">Home</a> -->
+        <!-- <a href="product.html">Products</a> -->
+        <a href="cart.html">Cart</a>
+        <a href="checkout.html">Checkout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Welcome to ShopEasy</h1>
+      <p class="lede">Your one-stop online shop for everything!</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="product.html">Start Shopping</a>
+      </div>
+    </section>
+    <div class="list_of_products">
+    </div>
+
+    <section class="features">
+      <article class="card">
+        <h3>Wide Selection</h3>
+        <p>Browse thousands of products across multiple categories.</p>
+      </article>
+      <article class="card">
+        <h3>Fast Delivery</h3>
+        <p>Get your items delivered quickly and reliably.</p>
+      </article>
+      <article class="card">
+        <h3>Secure Checkout</h3>
+        <p>Shop with confidence using our secure checkout process.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© <span id="year"></span> ShopEasy</div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+   <script src="stock.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

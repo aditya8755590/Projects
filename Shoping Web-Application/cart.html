@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ShopEasy — Cart</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header small">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">ShopEasy</a>
+      <nav class="main-nav">
+        <a href="product.html">Products</a>
+        <a href="checkout.html">Checkout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Your Cart</h2>
+    <table class="data-table" id="cartTable">
+      <thead>
+        <tr><th>Product</th><th>Quantity</th><th>Price</th><th>Total</th><th>Remove</th></tr>
+      </thead>
+      <tbody>
+        <!-- JS will populate rows -->
+      </tbody>
+    </table>
+    <div class="cart-summary">
+      <p><strong>Grand Total:</strong> $<span id="grandTotal">0.00</span></p>
+      <a class="btn btn-primary" href="checkout.html">Proceed to Checkout</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© <span id="year3"></span> ShopEasy</div>
+  </footer>
+
+  <script>document.getElementById('year3').textContent = new Date().getFullYear();</script>
+   <script src="app.js"></script>
+</body>
+</html>

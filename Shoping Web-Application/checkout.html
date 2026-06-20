@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ShopEasy — Checkout</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header small">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">ShopEasy</a>
+      <nav class="main-nav">
+        <a href="product.html">Products</a>
+        <a href="cart.html">Cart</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page-center">
+    <form id="checkoutForm" class="card auth-card" novalidate>
+      <h2>Checkout</h2>
+      <label for="name">Full Name</label>
+      <input id="name" name="name" type="text" placeholder="Your Name" required>
+      <label for="address">Address</label>
+      <input id="address" name="address" type="text" placeholder="123 Main St" required>
+      <label for="card">Card Number</label>
+      <input id="card" name="card" type="text" placeholder="1111-2222-3333-4444" required>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Place Order</button>
+        <a class="btn btn-outline" href="cart.html">Back to Cart</a>
+      </div>
+    </form>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© <span id="year4"></span> ShopEasy</div>
+  </footer>
+
+  <script>document.getElementById('year4').textContent = new Date().getFullYear();</script>
+   <script src="app.js"></script>
+</body>
+</html>

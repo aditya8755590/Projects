@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ShopEasy — Products</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="site-header small">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">ShopEasy</a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="cart.html">Cart</a>
+        <a href="checkout.html">Checkout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Products</h2>
+    <div class="product-grid" id="productGrid">
+      <!-- JS will load product cards -->
+      <div class="item_in_a_catogary">
+        <img src="https://picsum.photos/200?random=102" alt="">
+        <div class="information_of_item">
+    <h2 class="product-title">
+      TP-Link Deco M4 Whole Home Mesh Wi-Fi System, Seamless Roaming and Speedy (AC1200), 
+      Work with Amazon Echo/Alexa, Router and Wi-Fi Booster, Parental Control, Pack of 1, Qualcomm CPU
+    </h2>
+
+    <div class="product-rating">
+      ⭐ 4.3 out of 5 stars (31.3K)
+    </div>
+
+    <div class="product-sales">
+      1K+ bought in past month
+    </div>
+
+    <div class="festival-offer">
+      🎉 Great Indian Festival
+    </div>
+
+    <div class="product-price">
+      <span class="offer-price">₹2,399</span>
+      <span class="mrp">M.R.P: <s>₹8,999</s></span>
+      <span class="discount">(73% off)</span>
+    </div>
+
+    <div class="bank-offer">
+      Flat ₹100 Off on SBI Credit Cards
+    </div>
+
+    <div class="delivery">
+      🚚 FREE delivery Mon, 29 Sept.
+    </div>
+        </div>
+      </div>
+      <div class="item_in_a_catogary">
+        <img src="" alt="">
+        <div class="information_of_item"></div>
+      </div>
+      <div class="item_in_a_catogary">
+        <img src="" alt="">
+        <div class="information_of_item"></div>
+      </div>
+      <div class="item_in_a_catogary">
+       <img src="" alt="">
+        <div class="information_of_item"></div>
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© <span id="year2"></span> ShopEasy</div>
+  </footer>
+
+  <script>document.getElementById('year2').textContent = new Date().getFullYear();</script>
+  <script src="stock.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
