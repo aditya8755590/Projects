@@ -1,10 +1,9 @@
-import NavBar from "./components/Nav-bar"
-import Main from './components/MainContent.jsx'
-export default function App() {
+function App() {
   return (
-   <>
-      <NavBar />
-      <Main />
-    </>
-  ) 
+    <div className="App">
+      <h1>Hello World!</h1>
+    </div>
+  );
 }
+
+export default App;
