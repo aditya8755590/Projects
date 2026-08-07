@@ -10,6 +10,7 @@ const transporter = nodemailer.createTransport({
 
 });
 export default transporter;
+
 // 	1.	SMTP (Simple Mail Transfer Protocol) is used by servers to send emails over the internet.
 // 	2.	In email verification, SMTP sends a verification link to the user’s email address.
 // 	3.	The backend connects to an SMTP server (like Gmail, Outlook, SendGrid).
