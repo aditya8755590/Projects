@@ -1,8 +1,7 @@
-package in.strikes.crudSpringBootDemo.service;
+package com.example.crudSpringBootDemo.service;
 
-import in.strikes.crudSpringBootDemo.entity.Student;
-import in.strikes.crudSpringBootDemo.repository.StudentRepository;
-import org.springframework.stereotype.Component;
+import com.example.crudSpringBootDemo.entity.Student;
+import com.example.crudSpringBootDemo.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,9 +17,51 @@ public class StudentService {
     }
 
     public Student createStudent(Student studentReq) {
-        System.out.println("Inside Student Service");
-        Student studentResp = studentRepository.saveStudent(studentReq);
-        System.out.println("Exiting Student Service");
+        Student studentResp = studentRepository.save(studentReq);
         return studentResp;
+    }
+
+    public Student getStudent(Long id) {
+        Optional<Student> studentResp = studentRepository.findById(id);
+
+        if(studentResp.isPresent()) {
+            return studentResp.get();
+        }
+
+        return null;
+    }
+
+    public List<Student> getAllStudent() {
+        return studentRepository.findAll();
+
+    }
+
+
+    public Student updateStudent(Long id, Student studentReq) {
+        Optional<Student> existingStudent = studentRepository.findById(id);
+
+        if(existingStudent.isEmpty()) {
+            return null;
+        }
+
+        Student studentToSave = existingStudent.get();
+
+        studentToSave.setName(studentReq.getName());
+        studentToSave.setRollNo(studentReq.getRollNo());
+        studentToSave.setSubject(studentReq.getSubject());
+        studentToSave.setEmail(studentReq.getEmail());
+        studentToSave.setAge(studentReq.getAge());
+
+        return studentRepository.save(studentToSave);
+    }
+
+    public Boolean deleteStudent(Long id) {
+        Boolean isStudent = studentRepository.existsById(id);
+
+        if(!isStudent) return false;
+
+        studentRepository.deleteById(id);
+
+        return true;
     }
 }
