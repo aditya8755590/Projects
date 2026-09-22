@@ -10,9 +10,14 @@
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto"); // Node's built-in crypto (CSRF token + SHA-256)
+const crypto = require("crypto"); // Node's built-in crypto (CSRF tokens)
 const User = require("../models/User");
 const { serializeUser } = require("../utils/serializeUser");
+const {
+  createAccessToken,
+  createRefreshToken,
+  hashRefreshToken,
+} = require("../utils/tokens");
 const {
   logSection,
   logStep,
@@ -23,40 +28,6 @@ const {
   logDetail,
   logBlank,
 } = require("../utils/logger");
-
-// =========================================================
-//  TOKEN HELPERS
-// =========================================================
-
-// Access token: SHORT lived (15 min). Carries userId AND role so that
-// requireAdmin can check the role without another database lookup.
-// It is signed with the ACCESS secret.
-function createAccessToken(user) {
-  return jwt.sign(
-    { userId: user._id.toString(), role: user.role }, // JWT payload
-    process.env.JWT_ACCESS_SECRET, // secret #1
-    { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN } // e.g. 15m
-  );
-}
-
-// Refresh token: LONG lived (7 days). Carries ONLY userId.
-// It is signed with the REFRESH secret — a DIFFERENT secret, so an
-// access token can never be accepted as a refresh token or vice versa.
-function createRefreshToken(user) {
-  return jwt.sign(
-    { userId: user._id.toString() },
-    process.env.JWT_REFRESH_SECRET,
-    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN }
-  );
-}
-
-// We never store the raw refresh token in MongoDB. We store its SHA-256
-// hash. Why? If the database is ever leaked, hashes can't be replayed as
-// tokens directly. And hashing lets us compare "did this refresh token
-// get issued to this user?" and lets us REVOKE a session on logout.
-function hashRefreshToken(refreshToken) {
-  return crypto.createHash("sha256").update(refreshToken).digest("hex");
-}
 
 // =========================================================
 //  COOKIE HELPERS
