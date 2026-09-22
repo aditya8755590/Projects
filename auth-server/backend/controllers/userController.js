@@ -8,6 +8,7 @@
 // =========================================================
 
 const User = require("../models/User");
+const { serializeUser } = require("../utils/serializeUser");
 const {
   logSection,
   logStep,
@@ -18,7 +19,8 @@ const {
   logBlank,
 } = require("../utils/logger");
 
-// Safe projection: never send password/refreshTokenHash to the client.
+// Safe projection for the admin list query: never select password
+// or refreshTokenHash. Responses are shaped by serializeUser.
 const SAFE_FIELDS = "name email role createdAt";
 
 // ---- GET /api/profile (no CSRF: read-only) ----
@@ -42,16 +44,7 @@ async function getProfile(req, res) {
   logDetail("Role", user.role);
   logBlank();
 
-  res.status(200).json({
-    success: true,
-    data: {
-      id: user._id.toString(),
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      createdAt: user.createdAt,
-    },
-  });
+  res.status(200).json({ success: true, data: serializeUser(user) });
 }
 
 // ---- PUT /api/profile (state-changing: requires CSRF token) ----
@@ -90,15 +83,7 @@ async function updateProfile(req, res) {
   logDetail("New name", user.name);
   logBlank();
 
-  res.status(200).json({
-    success: true,
-    data: {
-      id: user._id.toString(),
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    },
-  });
+  res.status(200).json({ success: true, data: serializeUser(user) });
 }
 
 // ---- GET /api/users (admin only, read-only) ----
@@ -114,13 +99,7 @@ async function listUsers(req, res) {
 
   res.status(200).json({
     success: true,
-    data: users.map((u) => ({
-      id: u._id.toString(),
-      name: u.name,
-      email: u.email,
-      role: u.role,
-      createdAt: u.createdAt,
-    })),
+    data: users.map(serializeUser),
   });
 }
 

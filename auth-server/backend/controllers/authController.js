@@ -12,6 +12,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto"); // Node's built-in crypto (CSRF token + SHA-256)
 const User = require("../models/User");
+const { serializeUser } = require("../utils/serializeUser");
 const {
   logSection,
   logStep,
@@ -22,17 +23,6 @@ const {
   logDetail,
   logBlank,
 } = require("../utils/logger");
-
-// Safety: when generating replies we ONLY ever pick these safe fields.
-function publicUser(user) {
-  return {
-    id: user._id.toString(),
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    createdAt: user.createdAt,
-  };
-}
 
 // =========================================================
 //  TOKEN HELPERS
@@ -177,7 +167,7 @@ async function register(req, res) {
 
   // Note: no cookies are set here. Registration just creates the account;
   // the user then logs in (Login.jsx -> POST /api/auth/login) to get a session.
-  res.status(201).json({ success: true, data: publicUser(user) });
+  res.status(201).json({ success: true, data: serializeUser(user) });
 }
 
 // =========================================================
@@ -266,7 +256,7 @@ async function login(req, res) {
 
   // The response body contains ONLY safe public user data. The tokens live
   // in cookies and never reach JavaScript-land.
-  res.status(200).json({ success: true, data: publicUser(user) });
+  res.status(200).json({ success: true, data: serializeUser(user) });
 }
 
 // =========================================================
