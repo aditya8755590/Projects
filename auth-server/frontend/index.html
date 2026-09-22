@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auth Learning</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #fafafa;
+        margin: 0;
+        padding: 0;
+      }
+      .nav {
+        background: #111;
+        color: #fff;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        padding: 12px 20px;
+      }
+      .nav button {
+        background: transparent;
+        color: #fff;
+        border: 1px solid #444;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .nav span.grow {
+        flex: 1;
+      }
+      .card {
+        max-width: 420px;
+        margin: 40px auto;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 28px;
+      }
+      .card h2 {
+        margin-top: 0;
+      }
+      label {
+        display: block;
+        margin: 12px 0 4px;
+        font-size: 14px;
+      }
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+      button.primary {
+        width: 100%;
+        margin-top: 16px;
+        padding: 11px;
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        cursor: pointer;
+      }
+      .ok {
+        color: #15803d;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        padding: 8px;
+        border-radius: 6px;
+        margin: 10px 0;
+      }
+      .err {
+        color: #b91c1c;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        padding: 8px;
+        border-radius: 6px;
+        margin: 10px 0;
+      }
+      .box {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 14px;
+        margin: 10px 0;
+        background: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .status {
+        font-size: 13px;
+        color: #555;
+        margin-top: 4px;
+      }
+      .danger {
+        background: #dc2626;
+        color: #fff;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      /* ---- Request Flow Log panel (bottom dock) ---- */
+      .flow-panel {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #0d1117;
+        border-top: 1px solid #30363d;
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+        z-index: 100;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12.5px;
+      }
+      .flow-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 16px;
+        color: #e6edf3;
+        background: #161b22;
+        border-bottom: 1px solid #30363d;
+      }
+      .flow-head .grow {
+        flex: 1;
+      }
+      .flow-count {
+        color: #8b949e;
+        font-size: 11px;
+      }
+      .flow-btn {
+        background: #21262d;
+        color: #e6edf3;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        padding: 3px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .flow-btn:hover {
+        background: #30363d;
+      }
+      .flow-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #f85149;
+        display: inline-block;
+      }
+      .flow-dot-on {
+        background: #3fb950;
+        box-shadow: 0 0 6px #3fb950;
+      }
+      .flow-body {
+        max-height: 240px;
+        overflow-y: auto;
+        padding: 8px 16px;
+        line-height: 1.55;
+      }
+      .flow-line {
+        white-space: pre-wrap;
+        word-break: break-word;
+        border-left: 3px solid transparent;
+        padding-left: 8px;
+      }
+      .flow-time {
+        color: #484f58;
+        margin-right: 8px;
+        user-select: none;
+      }
+      .flow-src {
+        display: inline-block;
+        width: 24px;
+        text-align: center;
+        font-size: 10px;
+        border-radius: 4px;
+        margin-right: 8px;
+        padding: 0 2px;
+      }
+      .flow-src-backend {
+        background: #1f6feb;
+        color: #fff;
+      }
+      .flow-src-frontend {
+        background: #8957e5;
+        color: #fff;
+      }
+      .flow-src-panel {
+        background: #21262d;
+        color: #8b949e;
+      }
+
+      /* line colors by type */
+      .flow-line.section { color: #79c0ff; font-weight: 700; }
+      .flow-line.step    { color: #7ee787; }
+      .flow-line.info    { color: #8b949e; }
+      .flow-line.fe      { color: #d2a8ff; }
+      .flow-line.detail  { color: #e6edf3; }
+      .flow-line.http    { color: #79c0ff; }
+      .flow-line.ok      { color: #3fb950; }
+      .flow-line.warn    { color: #d29922; border-left-color: #d29922; }
+      .flow-line.error   { color: #f85149; border-left-color: #f85149; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

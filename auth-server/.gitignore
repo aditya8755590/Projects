@@ -1,0 +1,28 @@
+# =========================================================
+#  .gitignore  —  the security-critical file
+#  The .env files contain secrets (JWT signing keys). They MUST
+#  never be committed. Node_modules and build output are not source.
+# =========================================================
+
+# Environment files with secrets
+.env
+.env.local
+.env.production
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS junk
+.DS_Store
+
+# Vite/coverage
+coverage/
+.DS_Store
