@@ -17,6 +17,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const logRoutes = require("./routes/logRoutes");
+const requestLogger = require("./utils/requestLogger");
 
 const {
   logSection,
@@ -72,22 +73,7 @@ app.use(
 // This makes it easy to follow a request from the terminal after clicking
 // a button on the frontend. We log only method, path and status — never
 // bodies, passwords or token values.
-app.use((req, res, next) => {
-  const start = Date.now();
-  console.log(`\n  ➡️  ${req.method} ${req.originalUrl}`);
-  publish("http", `➡️  ${req.method} ${req.originalUrl}`);
-
-  res.on("finish", () => {
-    const ms = Date.now() - start;
-    // Color the status code: green 2xx, yellow 4xx, red 5xx.
-    const color =
-      res.statusCode < 400 ? "\x1b[32m" : res.statusCode < 500 ? "\x1b[33m" : "\x1b[31m";
-    console.log(`  ⬅️  ${req.method} ${req.originalUrl} → ${color}${res.statusCode}\x1b[0m (${ms}ms)`);
-    publish("http", `⬅️  ${req.method} ${req.originalUrl} → ${res.statusCode} (${ms}ms)`);
-  });
-
-  next();
-});
+app.use(requestLogger);
 
 // ---- Routes ----
 app.get("/api/health", (req, res) =>
