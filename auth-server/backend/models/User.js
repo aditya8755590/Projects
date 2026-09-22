@@ -18,6 +18,14 @@ const mongoose = require("mongoose");
 // the controller/middleware can compare against a shared constant.
 const ROLES = ["USER", "ADMIN"];
 
+// Named access to those same values (ROLE.ADMIN) so we never type
+// a raw role string anywhere else in the codebase — a typo becomes
+// impossible instead of a silent auth bug.
+const ROLE = Object.freeze({
+  USER: ROLES[0],
+  ADMIN: ROLES[1],
+});
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -50,7 +58,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ROLES,
-      default: "USER", // a brand-new account is a normal user
+      default: ROLE.USER, // a brand-new account is a normal user
     },
 
     // We do NOT store the refresh token itself. We store a SHA-256 hash
@@ -70,3 +78,4 @@ const userSchema = new mongoose.Schema(
 
 module.exports = mongoose.model("User", userSchema);
 module.exports.ROLES = ROLES;
+module.exports.ROLE = ROLE;

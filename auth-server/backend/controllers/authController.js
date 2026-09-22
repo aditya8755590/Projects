@@ -13,6 +13,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto"); // Node's built-in crypto (CSRF tokens)
 const User = require("../models/User");
 const { serializeUser } = require("../utils/serializeUser");
+const { ROLE } = require("../models/User");
 const {
   createAccessToken,
   createRefreshToken,
@@ -79,7 +80,7 @@ async function register(req, res) {
     name,
     email,
     password: hashedPassword,
-    role: "USER", // everyone who registers starts as USER
+    role: ROLE.USER, // everyone who registers starts as USER
   });
   logSuccess("User created in database");
 

@@ -11,6 +11,7 @@ require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const connectDB = require("../config/db");
 const User = require("../models/User");
+const { ROLE } = require("../models/User");
 const {
   logSection,
   logWarn,
@@ -43,13 +44,13 @@ async function seedAdmin() {
     name: ADMIN_NAME,
     email: ADMIN_EMAIL,
     password: hashed,
-    role: "ADMIN",
+    role: ROLE.ADMIN,
   });
 
   logSuccess("Admin user created");
   logDetail("Email", ADMIN_EMAIL);
   logDetail("Password", ADMIN_PASSWORD);
-  logDetail("Role", "ADMIN");
+  logDetail("Role", ROLE.ADMIN);
   logBlank();
 
   await mongooseConnection.disconnect();

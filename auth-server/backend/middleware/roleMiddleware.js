@@ -9,6 +9,7 @@
 // =========================================================
 
 const { fail } = require("../utils/respond");
+const { ROLE } = require("../models/User");
 const {
   logSection,
   logInfo,
@@ -26,10 +27,10 @@ function requireAdmin(req, res, next) {
   logInfo("Authorization = 'what are you allowed to do?'");
   logDetail("User ID", req.user ? req.user.userId : "(none)");
   logDetail("Your role", req.user ? req.user.role : "(none)");
-  logDetail("Required role", "ADMIN");
+  logDetail("Required role", ROLE.ADMIN);
 
   // A normal USER (or anyone without req.user) is rejected with 403.
-  if (!req.user || req.user.role !== "ADMIN") {
+  if (!req.user || req.user.role !== ROLE.ADMIN) {
     return fail(res, 403, "Forbidden: ADMIN role required.", [
       "Authorization FAILED",
       "Reason: this account is not an ADMIN.",
