@@ -9,12 +9,12 @@
 
 const User = require("../models/User");
 const { serializeUser } = require("../utils/serializeUser");
+const { fail } = require("../utils/respond");
 const {
   logSection,
   logStep,
   logInfo,
   logSuccess,
-  logError,
   logDetail,
   logBlank,
 } = require("../utils/logger");
@@ -33,10 +33,7 @@ async function getProfile(req, res) {
 
   const user = await User.findById(req.user.userId);
   if (!user) {
-    logError("Profile FAILED: user no longer exists.");
-    logError("HTTP 404");
-    logBlank();
-    return res.status(404).json({ success: false, error: "User not found." });
+    return fail(res, 404, "User not found.", ["Profile FAILED: user no longer exists."]);
   }
 
   logSuccess("Profile loaded from database");
@@ -57,13 +54,9 @@ async function updateProfile(req, res) {
 
   // Only the name is editable in this learning project.
   if (!name || typeof name !== "string" || name.trim().length < 2) {
-    logError("Update FAILED: a valid name (min 2 characters) is required.");
-    logError("HTTP 400");
-    logBlank();
-    return res.status(400).json({
-      success: false,
-      error: "A valid name (min 2 characters) is required.",
-    });
+    return fail(res, 400, "A valid name (min 2 characters) is required.", [
+      "Update FAILED: a valid name (min 2 characters) is required.",
+    ]);
   }
 
   const user = await User.findByIdAndUpdate(
@@ -73,10 +66,7 @@ async function updateProfile(req, res) {
   );
 
   if (!user) {
-    logError("Update FAILED: user not found.");
-    logError("HTTP 404");
-    logBlank();
-    return res.status(404).json({ success: false, error: "User not found." });
+    return fail(res, 404, "User not found.", ["Update FAILED: user not found."]);
   }
 
   logSuccess("Profile updated in database");
@@ -112,21 +102,15 @@ async function deleteUser(req, res) {
 
   // Safety: an admin should not be able to delete their own account.
   if (targetId === req.user.userId) {
-    logError("Delete FAILED: you cannot delete your own account.");
-    logError("HTTP 400");
-    logBlank();
-    return res
-      .status(400)
-      .json({ success: false, error: "You cannot delete your own account." });
+    return fail(res, 400, "You cannot delete your own account.", [
+      "Delete FAILED: you cannot delete your own account.",
+    ]);
   }
 
   const user = await User.findByIdAndDelete(targetId);
 
   if (!user) {
-    logError("Delete FAILED: user not found.");
-    logError("HTTP 404");
-    logBlank();
-    return res.status(404).json({ success: false, error: "User not found." });
+    return fail(res, 404, "User not found.", ["Delete FAILED: user not found."]);
   }
 
   logSuccess("User deleted from the database");
