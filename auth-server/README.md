@@ -51,51 +51,76 @@ npm run dev                 # → http://localhost:5173
 auth-server/
 │
 ├── backend/
-│   ├── server.js                    # Express app: CORS, cookie-parser, routes, logger, error handler
+│   ├── server.js                    # Express app: CORS, cookie-parser, request logger, routes, 404, error handler
+│   ├── seedAdmin.js -> scripts/     # seed script moved under scripts/
 │   ├── .env.example                 # template — copy to .env (which is gitignored)
-│   ├── package.json
+│   ├── package.json                 # npm run dev | start | seed:admin | test (node --test)
 │   │
 │   ├── config/
-│   │   └── db.js                    # Mongoose connection (fails fast if MongoDB is down)
+│   │   └── db.js                    # Mongoose connectDB() (fails fast if MongoDB is down)
 │   │
 │   ├── models/
-│   │   └── User.js                  # name, email, password(hashed), role, refreshTokenHash, timestamps
+│   │   └── User.js                  # name, email, password(hashed), role, refreshTokenHash, timestamps (+ ROLES/ROLE constants)
 │   │
 │   ├── controllers/
-│   │   ├── authController.js        # register, login, refresh, logout (+ token/cookie helpers)
+│   │   ├── authController.js        # register, login, refresh, logout
 │   │   └── userController.js        # getProfile, updateProfile, listUsers, deleteUser
 │   │
 │   ├── middleware/
 │   │   ├── authMiddleware.js        # AUTHENTICATION — jwt.verify(accessToken), sets req.user
 │   │   ├── csrfMiddleware.js        # double-submit cookie: cookie vs X-CSRF-Token header
-│   │   └── roleMiddleware.js        # AUTHORIZATION — requireAdmin
+│   │   └── roleMiddleware.js        # AUTHORIZATION — requireAdmin (ROLE.ADMIN)
 │   │
 │   ├── routes/
 │   │   ├── authRoutes.js            # /api/auth/register | login | refresh | logout
-│   │   └── userRoutes.js            # /api/profile, /api/users, /api/users/:id
+│   │   ├── userRoutes.js            # /api/profile, /api/users, /api/users/:id
+│   │   └── logRoutes.js             # GET /api/logs/stream (SSE for the flow panel)
 │   │
 │   ├── scripts/
-│   │   └── seedAdmin.js             # creates the ADMIN demo account
+│   │   └── seedAdmin.js             # creates the ADMIN demo account (reuses connectDB)
 │   │
-│   └── utils/
-│       └── logger.js                # pretty banner logger (never logs tokens/passwords)
+│   ├── test/                        # node:test unit tests (npm test)
+│   │   ├── cors.test.js
+│   │   ├── errorHandler.test.js
+│   │   ├── logBuffer.test.js
+│   │   ├── respond.test.js          # fail() responder
+│   │   └── serializeUser.test.js    # safe public user shape
+│   │
+│   └── utils/                       # shared helpers — no more copy-paste
+│       ├── logger.js                # pretty banner logger (never logs tokens/passwords)
+│       ├── logBuffer.js             # in-memory ring buffer + SSE broadcaster
+│       ├── cors.js                  # allowed-origins list + isAllowedOrigin()
+│       ├── errorHandler.js          # errorBody(): thrown errors -> clean HTTP status + message
+│       ├── respond.js               # fail(res, status, message, log[]) — ONE error responder
+│       ├── requestLogger.js         # middleware that logs every request + status code
+│       ├── serializeUser.js         # the ONE safe user shape sent to the client
+│       ├── tokens.js                # createAccessToken / createRefreshToken / hashRefreshToken
+│       └── cookies.js               # access/refresh/CSRF cookie options + clearAuthCookies()
 │
 └── frontend/
     ├── package.json
     ├── vite.config.js
-    ├── index.html
+    ├── index.html                   # structural only — styles moved to src/styles.css
     └── src/
-        ├── main.jsx                 # React entry
+        ├── main.jsx                 # React entry (+ imports styles.css)
         ├── App.jsx                  # mini router + session restore
+        ├── styles.css               # ALL styles (formerly inline in index.html)
         ├── api/
-        │   └── axios.js             # axios instance: withCredentials, CSRF + auto-refresh interceptors
+        │   └── axios.js             # API_BASE_URL + axios instance: withCredentials, CSRF + auto-refresh interceptors
+        ├── components/
+        │   ├── Alert.jsx            # shared success/error box
+        │   ├── Field.jsx            # shared label + input pair
+        │   └── FlowLogPanel.jsx     # on-screen "terminal" over the SSE stream
+        ├── hooks/
+        │   └── useAuthForm.js       # shared form state + submit wrapper (Login/Register)
         ├── pages/
         │   ├── Register.jsx
         │   ├── Login.jsx
-        │   ├── Profile.jsx
+        │   ├── Profile.jsx          # no redundant fetch — data passed by App
         │   └── Admin.jsx
         └── utils/
-            └── csrf.js              # reads the readable csrfToken cookie
+            ├── csrf.js              # reads the readable csrfToken cookie
+            └── errors.js            # getErrorMessage() — one way to read API errors
 ```
 
 ---
@@ -227,7 +252,7 @@ const token = jwt.sign(
   { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN }  // "15m"
 );
 ```
-`see: `createAccessToken()` in authController.js`
+`see: `createAccessToken()` in `backend/utils/tokens.js` (used by authController)`
 
 ## `jwt.verify()` — validate a token (ALWAYS use this for auth)
 
