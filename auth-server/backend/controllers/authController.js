@@ -22,6 +22,7 @@ const {
   accessCookieOptions,
   refreshCookieOptions,
   csrfCookieOptions,
+  clearAuthCookies,
 } = require("../utils/cookies");
 const {
   logSection,
@@ -301,14 +302,8 @@ async function logout(req, res) {
 
   // 2. Clear the cookies on the browser. maxAge: 0 tells the browser
   //    to expire them immediately.
-  logStep(1, "Clearing accessToken cookie");
-  res.cookie("accessToken", "", { ...accessCookieOptions(), maxAge: 0 });
-
-  logStep(2, "Clearing refreshToken cookie");
-  res.cookie("refreshToken", "", { ...refreshCookieOptions(), maxAge: 0 });
-
-  logStep(3, "Clearing csrfToken cookie");
-  res.cookie("csrfToken", "", { ...csrfCookieOptions(), maxAge: 0 });
+  logStep(1, "Clearing accessToken, refreshToken and csrfToken cookies");
+  clearAuthCookies(res);
 
   logSuccess("LOGOUT SUCCESS — all cookies cleared");
   logBlank();

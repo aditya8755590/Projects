@@ -46,10 +46,20 @@ function csrfCookieOptions() {
   return baseOptions({ httpOnly: false, maxAge: REFRESH_MAX_AGE });
 }
 
+// Logout: expire all three cookies immediately (maxAge: 0 tells the
+// browser to destroy them). The HttpOnly flags mirror the setter
+// cookies so each one is cleared with the same visibility rules.
+function clearAuthCookies(res) {
+  res.cookie("accessToken", "", baseOptions({ httpOnly: true, maxAge: 0 }));
+  res.cookie("refreshToken", "", baseOptions({ httpOnly: true, maxAge: 0 }));
+  res.cookie("csrfToken", "", baseOptions({ httpOnly: false, maxAge: 0 }));
+}
+
 module.exports = {
   accessCookieOptions,
   refreshCookieOptions,
   csrfCookieOptions,
+  clearAuthCookies,
   ACCESS_MAX_AGE,
   REFRESH_MAX_AGE,
 };
