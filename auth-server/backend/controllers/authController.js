@@ -19,6 +19,11 @@ const {
   hashRefreshToken,
 } = require("../utils/tokens");
 const {
+  accessCookieOptions,
+  refreshCookieOptions,
+  csrfCookieOptions,
+} = require("../utils/cookies");
+const {
   logSection,
   logStep,
   logInfo,
@@ -28,51 +33,6 @@ const {
   logDetail,
   logBlank,
 } = require("../utils/logger");
-
-// =========================================================
-//  COOKIE HELPERS
-// =========================================================
-
-// The two tokens are HttpOnly: JavaScript on the frontend CANNOT read
-// them, so an XSS attack cannot steal them. Only the server can.
-//   httpOnly: true        -> invisible to document.cookie on the browser
-//   secure: COOKIE_SECURE -> only sent over HTTPS (off in local dev)
-//   sameSite: "lax"       -> sent on same-site requests (and top-level GET
-//                            navigation); blocks most CSRF on its own
-
-function accessCookieOptions() {
-  return {
-    httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true",
-    sameSite: "lax",
-    maxAge: 15 * 60 * 1000, // 15 minutes (must match JWT lifetime)
-    path: "/",
-  };
-}
-
-function refreshCookieOptions() {
-  return {
-    httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true",
-    sameSite: "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    path: "/",
-  };
-}
-
-// The CSRF token cookie is deliberately NOT httpOnly — the frontend MUST
-// be able to read it (it echoes the value back as an X-CSRF-Token header
-// on PUT/POST/PATCH/DELETE requests). See csrfMiddleware.js for the full
-// "why is one cookie HttpOnly and the other not?" explanation.
-function csrfCookieOptions() {
-  return {
-    httpOnly: false, // readable by JavaScript — required for CSRF header
-    secure: process.env.COOKIE_SECURE === "true",
-    sameSite: "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    path: "/",
-  };
-}
 
 // =========================================================
 //  1. REGISTER — create an account
