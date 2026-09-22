@@ -30,6 +30,7 @@ const {
 const { publish } = require("./utils/logBuffer");
 const { getAllowedOrigins, isAllowedOrigin } = require("./utils/cors");
 const { errorBody } = require("./utils/errorHandler");
+const { fail } = require("./utils/respond");
 
 const app = express();
 
@@ -99,7 +100,7 @@ app.use("/api/logs", logRoutes); // GET /api/logs/stream (SSE for the flow panel
 
 // ---- 404 for unknown routes ----
 app.use((req, res) => {
-  res.status(404).json({ success: false, error: "Route not found." });
+  return fail(res, 404, "Route not found.", ["Unknown route"]);
 });
 
 // ---- Central error handler ----
@@ -111,12 +112,11 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   const { status, message } = errorBody(err);
 
-  logError("SERVER ERROR");
-  logError(`Detail (server-side only): ${err.message}`);
-  logError(`Sending HTTP ${status} to the client`);
-  logBlank();
   publish("error", `SERVER ERROR → HTTP ${status}: ${message}`);
-  res.status(status).json({ success: false, error: message });
+  return fail(res, status, message, [
+    "SERVER ERROR",
+    `Detail (server-side only): ${err.message}`,
+  ]);
 });
 
 // ---- Start ----
