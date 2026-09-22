@@ -8,14 +8,13 @@
 
 require("dotenv").config();
 
-const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const connectDB = require("../config/db");
 const User = require("../models/User");
 const {
   logSection,
-  logInfo,
-  logSuccess,
   logWarn,
+  logSuccess,
   logError,
   logDetail,
   logBlank,
@@ -28,10 +27,7 @@ const ADMIN_NAME = "Admin";
 async function seedAdmin() {
   logSection("SEED ADMIN");
 
-  await mongoose.connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 5000,
-  });
-  logInfo("Connected to MongoDB");
+  const mongooseConnection = await connectDB();
 
   const existing = await User.findOne({ email: ADMIN_EMAIL });
   if (existing) {
@@ -56,7 +52,7 @@ async function seedAdmin() {
   logDetail("Role", "ADMIN");
   logBlank();
 
-  await mongoose.disconnect();
+  await mongooseConnection.disconnect();
   process.exit(0);
 }
 
