@@ -30,11 +30,11 @@
 //  for the one token that has to be JavaScript-readable.
 // =========================================================
 
+const { fail } = require("../utils/respond");
 const {
   logSection,
   logInfo,
   logSuccess,
-  logError,
   logDetail,
   logBlank,
   CYAN,
@@ -69,27 +69,20 @@ function csrfProtection(req, res, next) {
 
   // We log only PRESENCE and MATCH, never the token values.
   if (!cookieToken || !headerToken) {
-    logError("CSRF FAILED");
-    logError("Reason: both the csrfToken cookie AND the X-CSRF-Token header are required.");
-    logError("HTTP 403");
-    logBlank();
-    return res.status(403).json({
-      success: false,
-      error: "CSRF token missing. Refresh the page and try again.",
-    });
+    return fail(res, 403, "CSRF token missing. Refresh the page and try again.", [
+      "CSRF FAILED",
+      "Reason: both the csrfToken cookie AND the X-CSRF-Token header are required.",
+    ]);
   }
 
   // 3. Compare cookie vs header.
   logInfo("Comparing cookie token with header token...");
   if (cookieToken !== headerToken) {
-    logError("CSRF FAILED");
-    logError("Reason: cookie token and header token do NOT match.");
-    logError("Request rejected. HTTP 403");
-    logBlank();
-    return res.status(403).json({
-      success: false,
-      error: "CSRF token mismatch. Refresh the page and try again.",
-    });
+    return fail(res, 403, "CSRF token mismatch. Refresh the page and try again.", [
+      "CSRF FAILED",
+      "Reason: cookie token and header token do NOT match.",
+      "Request rejected.",
+    ]);
   }
 
   // 4. Match -> the request really came from our own frontend.

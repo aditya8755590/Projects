@@ -8,11 +8,11 @@
 //  only ever comes from the signed token, which cannot be forged.
 // =========================================================
 
+const { fail } = require("../utils/respond");
 const {
   logSection,
   logInfo,
   logSuccess,
-  logError,
   logDetail,
   logBlank,
   YELLOW,
@@ -30,14 +30,10 @@ function requireAdmin(req, res, next) {
 
   // A normal USER (or anyone without req.user) is rejected with 403.
   if (!req.user || req.user.role !== "ADMIN") {
-    logError("Authorization FAILED");
-    logError("Reason: this account is not an ADMIN.");
-    logError("HTTP 403 Forbidden");
-    logBlank();
-    return res.status(403).json({
-      success: false,
-      error: "Forbidden: ADMIN role required.",
-    });
+    return fail(res, 403, "Forbidden: ADMIN role required.", [
+      "Authorization FAILED",
+      "Reason: this account is not an ADMIN.",
+    ]);
   }
 
   logSuccess("Authorization SUCCESS — user is an ADMIN");
