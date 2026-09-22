@@ -1,15 +1,16 @@
 // =========================================================
 //  pages/Profile.jsx
 //
-//  Two requests, two different protection levels:
-//    GET /api/profile  -> READ ONLY  -> only authentication (no CSRF)
-//    PUT /api/profile  -> CHANGES    -> authentication + CSRF header
+//  Displays the current user and lets them update their name:
+//    displays data -> from App (already loaded via GET /api/profile
+//                     during session restore — no extra fetch here)
+//    PUT /api/profile -> CHANGES -> authentication + CSRF header
 //
 //  Watch the axios interceptors: the CSRF header and the automatic
 //  refresh-on-401 both happen behind the scenes.
 // =========================================================
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "../api/axios";
 import { getErrorMessage } from "../utils/errors";
 import Field from "../components/Field";
@@ -20,25 +21,6 @@ export default function Profile({ user, onUserChange }) {
   const [name, setName] = useState(user?.name || "");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-
-  // On mount: fetch the latest profile from the server.
-  // The accessToken cookie authenticates this GET request.
-  useEffect(() => {
-    const load = async () => {
-      console.log("[FRONTEND] Fetching GET /profile (no CSRF needed — read-only)");
-      try {
-        const { data } = await api.get("/profile");
-        setProfile(data.data);
-        setName(data.data.name);
-        setMessage("");
-        console.log("[FRONTEND] Profile loaded for", data.data.email);
-      } catch (err) {
-        setError(getErrorMessage(err, "Could not load profile."));
-        console.error("[FRONTEND] Profile fetch failed:", getErrorMessage(err));
-      }
-    };
-    load();
-  }, []);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -68,8 +50,8 @@ export default function Profile({ user, onUserChange }) {
       <Alert type="err">{error}</Alert>
 
       <p className="status">
-        This data comes from <code>GET /api/profile</code> using the HttpOnly
-        accessToken cookie.
+        This data was loaded by <code>GET /api/profile</code> during session
+        restore, using the HttpOnly accessToken cookie.
       </p>
 
       <div>
