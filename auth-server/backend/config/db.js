@@ -1,7 +1,6 @@
-
 // =========================================================
 //  config/db.js
-//  Establishes the MongoODB connection using Mongoose.
+//  Establishes the MongoDB connection using Mongoose.
 //  Splitting this into its own file keeps server.js short and
 //  makes the connection reusable (server.js and seedAdmin.js
 //  both call it).
