@@ -25,4 +25,3 @@ npm-debug.log*
 
 # Vite/coverage
 coverage/
-.DS_Store
