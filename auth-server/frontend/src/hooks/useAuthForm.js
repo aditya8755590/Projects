@@ -14,8 +14,9 @@
 //
 //  `submit` preventDefaults, clears errors, calls request, and on
 //  rejection converts the server error into a user-facing message.
-//  On success it returns the full axios response so the page can
-//  log its own success line and hand data to App.
+//  It resolves to { response } (full axios response) on success or
+//  { error } (the user-facing message) on failure, so the page can
+//  log its own success/failure lines and hand data to App.
 // =========================================================
 
 import { useState } from "react";
@@ -32,18 +33,19 @@ export function useAuthForm(initialFields, request, fallbackError) {
 
   const submit = async (e) => {
     e.preventDefault();
-    setError("");
-    setIsSubmitting(true);
 
     try {
-      return await request(fields);
+      setError("");
+      setIsSubmitting(true);
+      return { response: await request(fields) };
     } catch (err) {
-      setError(getErrorMessage(err, fallbackError));
-      return null;
+      const msg = getErrorMessage(err, fallbackError);
+      setError(msg);
+      return { error: msg };
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  return { fields, handleFieldChange, error, isSubmitting, submit };
+  return { fields, handleFieldChange, error, isSubmitting, submit, setFields };
 }

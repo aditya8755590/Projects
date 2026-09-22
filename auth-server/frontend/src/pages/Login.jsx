@@ -8,61 +8,58 @@
 //  stores them for us. We never put any token in localStorage.
 // =========================================================
 
-import { useState } from "react";
 import { api } from "../api/axios";
+import { useAuthForm } from "../hooks/useAuthForm";
+import Field from "../components/Field";
+import Alert from "../components/Alert";
 
 export default function Login({ onLogin, onSwitchToRegister }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const { fields, handleFieldChange, error, isSubmitting, submit } = useAuthForm(
+    { email: "", password: "" },
+    (f) => api.post("/auth/login", f),
+    "Login failed. Is the backend running?"
+  );
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
     console.log("[FRONTEND] Login request started");
 
-    try {
-      const { data } = await api.post("/auth/login", { email, password });
-
-      console.log("[FRONTEND] Login successful — user:", data.data.email);
-      console.log(
-        "[FRONTEND] Server set cookies: accessToken (HttpOnly), refreshToken (HttpOnly), csrfToken (readable)"
-      );
-      console.log("[FRONTEND] Tokens never touch JavaScript — they live in HttpOnly cookies");
-
-      // Tell App we are logged in; it hands data.data to Profile/Admin.
-      onLogin(data.data);
-    } catch (err) {
-      const msg = err.response?.data?.error || "Login failed. Is the backend running?";
-      setError(msg);
-      console.error("[FRONTEND] Login failed:", msg);
+    const { response, error: failMsg } = await submit(e);
+    if (failMsg) {
+      console.error("[FRONTEND] Login failed:", failMsg);
+      return; // error already shown
     }
+
+    console.log("[FRONTEND] Login successful — user:", response.data.data.email);
+    console.log(
+      "[FRONTEND] Server set cookies: accessToken (HttpOnly), refreshToken (HttpOnly), csrfToken (readable)"
+    );
+    console.log("[FRONTEND] Tokens never touch JavaScript — they live in HttpOnly cookies");
+
+    // Tell App we are logged in; it hands response.data.data to Profile/Admin.
+    onLogin(response.data.data);
   };
 
   return (
     <div className="card">
       <h2>Login</h2>
-      {error && <div className="err">{error}</div>}
+      <Alert type="err">{error}</Alert>
       <form onSubmit={handleSubmit}>
-        <label>Email</label>
-        <input
+        <Field
+          label="Email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={fields.email}
+          onChange={handleFieldChange("email")}
           required
         />
-
-        <label>Password</label>
-        <input
+        <Field
+          label="Password"
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={fields.password}
+          onChange={handleFieldChange("password")}
           required
         />
-
-        <button className="primary" type="submit">
-          Log in
+        <button className="primary" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Logging in..." : "Log in"}
         </button>
       </form>
       <p className="status">

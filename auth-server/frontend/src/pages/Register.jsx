@@ -7,65 +7,63 @@
 
 import { useState } from "react";
 import { api } from "../api/axios";
+import { useAuthForm } from "../hooks/useAuthForm";
+import Field from "../components/Field";
+import Alert from "../components/Alert";
 
 export default function Register({ onSwitchToLogin }) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const { fields, handleFieldChange, error, isSubmitting, submit, setFields } = useAuthForm(
+    { name: "", email: "", password: "" },
+    (f) => api.post("/auth/register", f),
+    "Registration failed."
+  );
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    setError("");
-
     console.log("[FRONTEND] Register request started");
+    setMessage("");
 
-    try {
-      const { data } = await api.post("/auth/register", { name, email, password });
-
-      console.log("[FRONTEND] Registration successful:", data.data.email);
-
-      setMessage(`Account created for ${data.data.email} — now log in.`);
-      setName("");
-      setEmail("");
-      setPassword("");
-    } catch (err) {
-      const msg = err.response?.data?.error || "Registration failed.";
-      setError(msg);
-      console.error("[FRONTEND] Registration failed:", msg);
+    const { response, error: failMsg } = await submit(e);
+    if (failMsg) {
+      console.error("[FRONTEND] Registration failed:", failMsg);
+      return; // error already shown
     }
+
+    console.log("[FRONTEND] Registration successful:", response.data.data.email);
+
+    setMessage(`Account created for ${response.data.data.email} — now log in.`);
+    setFields({ name: "", email: "", password: "" });
   };
 
   return (
     <div className="card">
       <h2>Register</h2>
-      {message && <div className="ok">{message}</div>}
-      {error && <div className="err">{error}</div>}
+      <Alert type="ok">{message}</Alert>
+      <Alert type="err">{error}</Alert>
       <form onSubmit={handleSubmit}>
-        <label>Name</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} required />
-
-        <label>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+        <Field
+          label="Name"
+          value={fields.name}
+          onChange={handleFieldChange("name")}
           required
         />
-
-        <label>Password (min 6 characters)</label>
-        <input
+        <Field
+          label="Email"
+          type="email"
+          value={fields.email}
+          onChange={handleFieldChange("email")}
+          required
+        />
+        <Field
+          label="Password (min 6 characters)"
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={fields.password}
+          onChange={handleFieldChange("password")}
           minLength={6}
           required
         />
-
-        <button className="primary" type="submit">
-          Create account
+        <button className="primary" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Creating account..." : "Create account"}
         </button>
       </form>
       <p className="status">
