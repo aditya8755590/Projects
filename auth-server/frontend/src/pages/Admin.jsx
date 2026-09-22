@@ -14,6 +14,8 @@
 
 import { useEffect, useState } from "react";
 import { api } from "../api/axios";
+import { getErrorMessage } from "../utils/errors";
+import Alert from "../components/Alert";
 
 export default function Admin({ user }) {
   const [users, setUsers] = useState([]);
@@ -29,7 +31,7 @@ export default function Admin({ user }) {
       setUsers(data.data);
       console.log(`[FRONTEND] Loaded ${data.data.length} user(s)`);
     } catch (err) {
-      const msg = err.response?.data?.error || "Failed to load users.";
+      const msg = getErrorMessage(err, "Failed to load users.");
       setError(msg);
       // A 403 here is EXPECTED when you are not an admin — it proves
       // that authorization gate is working.
@@ -61,7 +63,7 @@ export default function Admin({ user }) {
       console.log("[FRONTEND] User deleted:", data.message);
       loadUsers(); // refresh the list
     } catch (err) {
-      const msg = err.response?.data?.error || "Delete failed.";
+      const msg = getErrorMessage(err, "Delete failed.");
       setError(msg);
       console.error("[FRONTEND] Delete failed:", msg);
     } finally {
@@ -76,8 +78,8 @@ export default function Admin({ user }) {
         Logged in as <b>{user?.email}</b> (role <b>{user?.role}</b>)
       </p>
 
-      {message && <div className="ok">{message}</div>}
-      {error && <div className="err">{error}</div>}
+      <Alert type="ok">{message}</Alert>
+      <Alert type="err">{error}</Alert>
 
       {users.length > 0 && (
         <div>

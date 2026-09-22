@@ -11,6 +11,9 @@
 
 import { useEffect, useState } from "react";
 import { api } from "../api/axios";
+import { getErrorMessage } from "../utils/errors";
+import Field from "../components/Field";
+import Alert from "../components/Alert";
 
 export default function Profile({ user, onUserChange }) {
   const [profile, setProfile] = useState(user);
@@ -30,8 +33,8 @@ export default function Profile({ user, onUserChange }) {
         setMessage("");
         console.log("[FRONTEND] Profile loaded for", data.data.email);
       } catch (err) {
-        setError(err.response?.data?.error || "Could not load profile.");
-        console.error("[FRONTEND] Profile fetch failed:", err.response?.data?.error);
+        setError(getErrorMessage(err, "Could not load profile."));
+        console.error("[FRONTEND] Profile fetch failed:", getErrorMessage(err));
       }
     };
     load();
@@ -52,8 +55,8 @@ export default function Profile({ user, onUserChange }) {
       setMessage("Name updated!");
       console.log("[FRONTEND] Profile updated ->", data.data.name);
     } catch (err) {
-      setError(err.response?.data?.error || "Update failed.");
-      console.error("[FRONTEND] Profile update failed:", err.response?.data?.error);
+      setError(getErrorMessage(err, "Update failed."));
+      console.error("[FRONTEND] Profile update failed:", getErrorMessage(err));
     }
   };
 
@@ -61,8 +64,8 @@ export default function Profile({ user, onUserChange }) {
     <div className="card">
       <h2>Profile</h2>
 
-      {message && <div className="ok">{message}</div>}
-      {error && <div className="err">{error}</div>}
+      <Alert type="ok">{message}</Alert>
+      <Alert type="err">{error}</Alert>
 
       <p className="status">
         This data comes from <code>GET /api/profile</code> using the HttpOnly
@@ -70,12 +73,9 @@ export default function Profile({ user, onUserChange }) {
       </p>
 
       <div>
-        <label>Name</label>
-        <input value={profile?.name || ""} readOnly />
-        <label>Email</label>
-        <input value={profile?.email || ""} readOnly />
-        <label>Role</label>
-        <input value={profile?.role || ""} readOnly />
+        <Field label="Name" value={profile?.name || ""} readOnly />
+        <Field label="Email" value={profile?.email || ""} readOnly />
+        <Field label="Role" value={profile?.role || ""} readOnly />
       </div>
 
       <hr
@@ -88,8 +88,8 @@ export default function Profile({ user, onUserChange }) {
 
       <h3 style={{ marginTop: 0 }}>Update name</h3>
       <form onSubmit={handleUpdate}>
-        <label>New name</label>
-        <input
+        <Field
+          label="New name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           minLength={2}
