@@ -11,12 +11,12 @@
 // =========================================================
 
 const jwt = require("jsonwebtoken");
+const { fail } = require("../utils/respond");
 const {
   logSection,
   logStep,
   logInfo,
   logSuccess,
-  logError,
   logDetail,
   logBlank,
   CYAN,
@@ -51,14 +51,10 @@ function authenticate(req, res, next) {
   logDetail("Access token present", token ? "YES" : "NO");
 
   if (!token) {
-    logError("JWT AUTHENTICATION FAILED");
-    logError("Reason: token MISSING (no accessToken cookie)");
-    logError("HTTP 401");
-    logBlank();
-    return res.status(401).json({
-      success: false,
-      error: "Not authenticated. Please log in.",
-    });
+    return fail(res, 401, "Not authenticated. Please log in.", [
+      "JWT AUTHENTICATION FAILED",
+      "Reason: token MISSING (no accessToken cookie)",
+    ]);
   }
 
   // 2. Verify the JWT: signature + expiration, against the ACCESS secret.
@@ -87,22 +83,18 @@ function authenticate(req, res, next) {
   } catch (error) {
     // jsonwebtoken throws named errors; we translate them into readable
     // reasons for the terminal log.
+    let reason;
     if (error.name === "TokenExpiredError") {
-      logError("JWT AUTHENTICATION FAILED");
-      logError("Reason: token EXPIRED (access tokens live only 15 minutes)");
+      reason = "token EXPIRED (access tokens live only 15 minutes)";
     } else if (error.name === "JsonWebTokenError") {
-      logError("JWT AUTHENTICATION FAILED");
-      logError("Reason: INVALID SIGNATURE or malformed/tampered token");
+      reason = "INVALID SIGNATURE or malformed/tampered token";
     } else {
-      logError("JWT AUTHENTICATION FAILED");
-      logError(`Reason: ${error.message}`);
+      reason = error.message;
     }
-    logError("HTTP 401");
-    logBlank();
-    return res.status(401).json({
-      success: false,
-      error: "Invalid or expired token. Please log in again.",
-    });
+    return fail(res, 401, "Invalid or expired token. Please log in again.", [
+      "JWT AUTHENTICATION FAILED",
+      `Reason: ${reason}`,
+    ]);
   }
 }
 
