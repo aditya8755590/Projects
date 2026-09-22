@@ -24,10 +24,15 @@
 import axios from "axios";
 import { getCsrfToken } from "../utils/csrf";
 
+// The one place the backend URL is defined. Pages import `api` from here,
+// and FlowLogPanel imports API_BASE_URL to build its SSE stream URL — so a
+// port or host change lives in exactly one spot.
+export const API_BASE_URL = "http://localhost:4000/api";
+
 export const api = axios.create({
   // Directly to the Express backend (CORS, no proxy — you can see the
   // real URL in the Network tab).
-  baseURL: "http://localhost:4000/api",
+  baseURL: API_BASE_URL,
   // REQUIRED so the browser includes our HttpOnly auth cookies.
   withCredentials: true,
   headers: { "Content-Type": "application/json" },

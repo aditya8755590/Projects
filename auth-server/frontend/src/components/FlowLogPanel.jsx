@@ -18,8 +18,9 @@
 // =========================================================
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { API_BASE_URL } from "../api/axios";
 
-const STREAM_URL = "http://localhost:4000/api/logs/stream"; // must match axios baseURL
+const STREAM_URL = `${API_BASE_URL}/logs/stream`;
 const MAX_ENTRIES = 300;
 
 // Human-friendly time for each line: [14:03:22]
