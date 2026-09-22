@@ -24,6 +24,7 @@ const {
   csrfCookieOptions,
   clearAuthCookies,
 } = require("../utils/cookies");
+const { fail } = require("../utils/respond");
 const {
   logSection,
   logStep,
@@ -46,33 +47,23 @@ async function register(req, res) {
 
   // ---- Input validation (never trust the client) ----
   if (!name || !email || !password) {
-    logError("Registration FAILED: name, email and password are required.");
-    logBlank();
-    return res.status(400).json({
-      success: false,
-      error: "Name, email and password are required.",
-    });
+    return fail(res, 400, "Name, email and password are required.", [
+      "Registration FAILED: name, email and password are required.",
+    ]);
   }
   if (password.length < 6) {
-    logError("Registration FAILED: password must be at least 6 characters.");
-    logBlank();
-    return res.status(400).json({
-      success: false,
-      error: "Password must be at least 6 characters.",
-    });
+    return fail(res, 400, "Password must be at least 6 characters.", [
+      "Registration FAILED: password must be at least 6 characters.",
+    ]);
   }
 
   // ---- Does this email already exist? ----
   logStep(1, "Checking if the email is already registered...");
   const existing = await User.findOne({ email });
   if (existing) {
-    logError("Registration FAILED: a user with this email already exists.");
-    logError("HTTP 409 Conflict");
-    logBlank();
-    return res.status(409).json({
-      success: false,
-      error: "User already exists.",
-    });
+    return fail(res, 409, "User already exists.", [
+      "Registration FAILED: a user with this email already exists.",
+    ]);
   }
 
   // ---- Hash the password with bcrypt (cost factor 12) ----
@@ -112,12 +103,9 @@ async function login(req, res) {
   logDetail("Email", email);
 
   if (!email || !password) {
-    logError("Login FAILED: email and password are required.");
-    logBlank();
-    return res.status(400).json({
-      success: false,
-      error: "Email and password are required.",
-    });
+    return fail(res, 400, "Email and password are required.", [
+      "Login FAILED: email and password are required.",
+    ]);
   }
 
   // 1. Find the user. We need the password hash and refreshTokenHash, which
@@ -128,13 +116,9 @@ async function login(req, res) {
   if (!user) {
     // Generic error on purpose — do NOT reveal whether the email exists,
     // otherwise attackers can enumerate valid accounts.
-    logError("Login FAILED: no account with that email (generic response sent).");
-    logError("HTTP 401");
-    logBlank();
-    return res.status(401).json({
-      success: false,
-      error: "Invalid credentials.", // same message as wrong password
-    });
+    return fail(res, 401, "Invalid credentials.", [
+      "Login FAILED: no account with that email (generic response sent).",
+    ]);
   }
   logSuccess("User found");
 
@@ -142,13 +126,10 @@ async function login(req, res) {
   logStep(2, "Comparing password with bcrypt...");
   const passwordMatches = await bcrypt.compare(password, user.password);
   if (!passwordMatches) {
-    logError("Login FAILED: password does not match.");
-    logError("HTTP 401");
-    logBlank();
-    return res.status(401).json({
-      success: false,
-      error: "Invalid credentials.", // generic — never say which part was wrong
-    });
+    // Generic — never say which part was wrong.
+    return fail(res, 401, "Invalid credentials.", [
+      "Login FAILED: password does not match.",
+    ]);
   }
   logSuccess("Password correct");
 
@@ -202,10 +183,9 @@ async function refresh(req, res) {
   logDetail("Refresh token present", refreshToken ? "YES" : "NO");
 
   if (!refreshToken) {
-    logError("Refresh FAILED: refresh token MISSING.");
-    logError("HTTP 401");
-    logBlank();
-    return res.status(401).json({ success: false, error: "Not authenticated." });
+    return fail(res, 401, "Not authenticated.", [
+      "Refresh FAILED: refresh token MISSING.",
+    ]);
   }
 
   // 2. Verify the refresh token with the REFRESH secret.
@@ -216,15 +196,14 @@ async function refresh(req, res) {
     logSuccess("Refresh token signature & expiration VALID");
     logDetail("User ID", decoded.userId);
   } catch (error) {
-    logError("Refresh FAILED");
-    if (error.name === "TokenExpiredError") {
-      logError("Reason: refresh token EXPIRED (7 days are up) — please log in again.");
-    } else {
-      logError("Reason: refresh token INVALID.");
-    }
-    logError("HTTP 401");
-    logBlank();
-    return res.status(401).json({ success: false, error: "Session expired. Please log in again." });
+    const reason =
+      error.name === "TokenExpiredError"
+        ? "Reason: refresh token EXPIRED (7 days are up) — please log in again."
+        : "Reason: refresh token INVALID.";
+    return fail(res, 401, "Session expired. Please log in again.", [
+      "Refresh FAILED",
+      reason,
+    ]);
   }
 
   // 3. Load the user, then check that this exact refresh token is still
@@ -232,20 +211,16 @@ async function refresh(req, res) {
   //    REVOCATION possible: logged-out / rotated tokens fail here.
   const user = await User.findById(decoded.userId).select("+refreshTokenHash");
   if (!user) {
-    logError("Refresh FAILED: user no longer exists.");
-    logError("HTTP 401");
-    logBlank();
-    return res.status(401).json({ success: false, error: "Session expired." });
+    return fail(res, 401, "Session expired.", [
+      "Refresh FAILED: user no longer exists.",
+    ]);
   }
 
   if (user.refreshTokenHash !== hashRefreshToken(refreshToken)) {
-    logError("Refresh FAILED: refresh token was REVOKED or already ROTATED.");
-    logError(
-      "This is how production systems invalidate stolen sessions (rotation/replay detection)."
-    );
-    logError("HTTP 401");
-    logBlank();
-    return res.status(401).json({ success: false, error: "Session expired." });
+    return fail(res, 401, "Session expired.", [
+      "Refresh FAILED: refresh token was REVOKED or already ROTATED.",
+      "This is how production systems invalidate stolen sessions (rotation/replay detection).",
+    ]);
   }
   logSuccess("Refresh token matches the stored hash (still valid)");
 
